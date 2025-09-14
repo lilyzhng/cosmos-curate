@@ -53,6 +53,46 @@ To improve upon that, the preprocessing functionality is separated into a VLM in
 
 Today the split-annotate pipeline produces the following artifacts under the path specified by `--output-clip-path`:
 
+# Option 1
+```bash
+{output_clip_path}/
+├── clips/                          # transcoded clips
+│   ├── {clip-uuid}.mp4
+├── ce1_embd_parquet/               # Cosmos-Embed1 embeddings grouped by a chunk of clips; used for semantic dedup
+│   ├── {video-uuid}_{chunk_index}.parquet
+├── metas_jsonl/v0/                 # metadatas grouped by a chunk of clips; enabled by `--upload-clip-info-in-chunks`
+│   ├── {video-uuid}_{chunk_index}.jsonl
+├── cvds_parquet/                   # metadata parquets for Milvus indexing; enabled by `--upload-cvds-parquet`
+│   ├── {clip-chunk-uuid}.parquet
+├── previews/                       # web previews for each caption window; enabled by `--generate-previews`
+│   ├── {clip-uuid}_{frame_range}.webp
+├── v0/all_window_captions.json     # aggregattion of all the captions generated for all the clips
+```
+# post training formatting
+```bash
+├── cosmos_video2world_dataset/     # dataset for Cosmos-Predict2 Video2World model post-training
+│   ├── metas/
+│       ├── {clip-uuid}_{frame_range}.txt
+│   ├── t5_xxl/
+│       ├── {clip-uuid}_{frame_range}.pickle
+│   ├── videos/
+│       ├── {clip-uuid}_{frame_range}.mp4
+```
+
+# log files
+```bash
+├── processed_videos/               # record for each processed input videos
+│   ├── {input-video-relpath}.json
+├── summary.json                    # summary of the pipeline results
+```
+# individual file
+```bash
+├── ce1_embd/                       # Cosmos-Embed1 embedding per clip; enabled by `--embedding-algorithm cosmos-embed1-336p`
+│   ├── {clip-uuid}.pickle
+├── metas/v0/                       # metadata per clip, motion & aesthetic scores will be included if enabled
+│   ├── {clip-uuid}.json
+```
+
 ```bash
 {output_clip_path}/
 ├── clips/                          # transcoded clips
